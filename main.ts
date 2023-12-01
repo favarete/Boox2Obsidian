@@ -2,24 +2,34 @@ import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Set
 
 // Remember to rename these classes and interfaces!
 
-interface MyPluginSettings {
+interface Boox2ObsidianSettings {
 	mySetting: string;
 }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
+const DEFAULT_SETTINGS: Boox2ObsidianSettings = {
 	mySetting: 'default'
 }
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+export default class Boox2Obsidian extends Plugin {
+	settings: Boox2ObsidianSettings;
 
 	async onload() {
 		await this.loadSettings();
+		const adapter = this.app.vault.adapter
+
+		const folderIsAvailable = await adapter.exists('_boox')
 
 		// This creates an icon in the left ribbon.
-		const ribbonIconEl = this.addRibbonIcon('dice', 'Sample Plugin', (evt: MouseEvent) => {
+		const ribbonIconEl = this.addRibbonIcon('dice', 'Boox2Obsidian', (evt: MouseEvent) => {
 			// Called when the user clicks the icon.
-			new Notice('This is a notice!');
+			new Notice('Console logged');
+			if(folderIsAvailable){
+				const booxFolder = adapter.getFullPath('_boox')
+				console.log('Folder path is: ', booxFolder)
+			}
+			else {
+				console.log('Folder don\'t exist')
+			}
 		});
 		// Perform additional things with the ribbon
 		ribbonIconEl.addClass('my-plugin-ribbon-class');
@@ -108,9 +118,9 @@ class SampleModal extends Modal {
 }
 
 class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
+	plugin: Boox2Obsidian;
 
-	constructor(app: App, plugin: MyPlugin) {
+	constructor(app: App, plugin: Boox2Obsidian) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
